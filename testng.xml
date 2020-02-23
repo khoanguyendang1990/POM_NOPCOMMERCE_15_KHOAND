@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Nop commerce" parallel="false">
+  <test name="Run on Chrome">
+  <parameter name="browserName" value="chrome">
+  <classes>
+  	<class name="com.nopcommerce.user.Level_06_Multi_Browser_Paralell_Factory_Pattern"/>
+  </classes>
+  </test>
+  <test name="Run on Firefox">
+  <parameter name="browserName" value="firefox"/>
+  <classes>
+  	<class name="com.nopcommerce.user.Level_06_Multi_Browser_Paralell_Factory_Pattern"/>
+  </classes>
+  </test>
+  <test name="Run on Chrome Headless">
+  <parameter name="browserName" value="chrome_headless"/>
+  <classes>
+  	<class name="com.nopcommerce.user.Level_06_Multi_Browser_Paralell_Factory_Pattern"/>
+  </classes>
+  </test>
+</suite> <!-- Suite -->
