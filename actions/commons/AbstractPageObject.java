@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotSelectableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
@@ -15,10 +14,13 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import pageObjects.HomePageObject;
+import pageObjects.LoginPageObject;
+import pageUIs.AbstractPageUI;
 
 public class AbstractPageObject {
 
@@ -105,12 +107,38 @@ public class AbstractPageObject {
 			logger.error("Exception Occurred While Clicking To Element: " + e.getMessage());
 		}
 	}
+	
+	public void clickToElement(String locator, String... params) {
+		try {
+			locator = castRestParameter(locator, params);
+			element = find(locator);
+			element.click();
+		} catch (ElementClickInterceptedException e) {
+			logger.error("Exception Occurred While Clicking To Element: " + e.getMessage());
+		}
+	}
+	
+	public String castRestParameter(String locator, String... params) {
+		locator = String.format(locator, (Object[]) params);
+		return locator;
+	}
 
 	public void sendKeyToElement(String locator, String value) {
 		try {
 			element = find(locator);
 			element.clear();
 			element.sendKeys(value);
+		} catch (NoSuchElementException e) {
+			logger.error("Exception Occurred While Sendkey To Element: " + e.getMessage());
+		}
+	}
+	
+	public void sendKeyToElement(String locator, String... values) {
+		try {
+			locator = castRestParameter(locator, values);
+			element = find(locator);
+			element.clear();
+			element.sendKeys(values);
 		} catch (NoSuchElementException e) {
 			logger.error("Exception Occurred While Sendkey To Element: " + e.getMessage());
 		}
@@ -175,6 +203,12 @@ public class AbstractPageObject {
 	}
 
 	public String getTextElement(String locator) {
+		element = find(locator);
+		return element.getText();
+	}
+	
+	public String getTextElement(String locator, String... params) {
+		locator = castRestParameter(locator, params);
 		element = find(locator);
 		return element.getText();
 	}
@@ -302,8 +336,20 @@ public class AbstractPageObject {
 		by = By.xpath(locator);
 		waitExplicit.until(ExpectedConditions.visibilityOfElementLocated(by));
 	}
+	
+	public void waitForElementVisible(String locator, String... params) {
+		locator = castRestParameter(locator, params);
+		by = By.xpath(locator);
+		waitExplicit.until(ExpectedConditions.visibilityOfElementLocated(by));
+	}
 
 	public void waitForElementPresence(String locator) {
+		by = By.xpath(locator);
+		waitExplicit.until(ExpectedConditions.presenceOfElementLocated(by));
+	}
+	
+	public void waitForElementPresence(String locator, String... params) {
+		locator = castRestParameter(locator, params);
 		by = By.xpath(locator);
 		waitExplicit.until(ExpectedConditions.presenceOfElementLocated(by));
 	}
@@ -317,4 +363,41 @@ public class AbstractPageObject {
 		by = By.xpath(locator);
 		waitExplicit.until(ExpectedConditions.elementToBeClickable(by));
 	}
+
+	public LoginPageObject openLoginPage() {
+		waitForElementVisible(AbstractPageUI.HEADER_LOGIN_LINK);
+		clickToElement(AbstractPageUI.HEADER_LOGIN_LINK);
+		return PageGeneratorManager.getLoginPage(driver);
+	}
+	
+	public HomePageObject openHomePage() {
+		waitForElementVisible(AbstractPageUI.HEADER_HOME_LINK);
+		clickToElement(AbstractPageUI.HEADER_HOME_LINK);
+		return PageGeneratorManager.getHomePage(driver);
+	}
+	
+	public AbstractPageObject openMultiplePage(String pageName) {
+		waitForElementVisible(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
+		clickToElement(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
+		switch(pageName) {
+		case "Home Page":
+			return PageGeneratorManager.getHomePage(driver);
+		case "My Account":
+			return PageGeneratorManager.getFooterMyAccountPage(driver);
+		case "Site Map":
+			return PageGeneratorManager.getSiteMapPage(driver);
+		case "Shipping And Return":
+			return PageGeneratorManager.getShippingAndReturnPage(driver);
+		case "Search Page":
+			return PageGeneratorManager.getSearchPage(driver);
+		default:
+			return PageGeneratorManager.getHomePage(driver);
+		}
+	}
+	
+	public void openMultiplePages(String pageName) {
+		waitForElementVisible(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
+		clickToElement(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
+	}
+		
 }

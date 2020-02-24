@@ -30,13 +30,12 @@ public class Level_05_ApplyPageObject_PageGenerator {
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get("https://demo.nopcommerce.com/");
-		
+		homePage = PageGeneratorManager.getHomePage(driver);
 	}
 
 	@Test
 	public void TC_01_Login() {
-		homePage = PageGeneratorManager.getHomePage(driver);
-		loginPage = homePage.clickToLoginLink();
+		loginPage = homePage.openLoginPage();
 		System.out.println("Input Email");
 		loginPage.inputTextToEmail("khoa.nguyendang1990@hotmail.com");
 		System.out.println("Input Password");

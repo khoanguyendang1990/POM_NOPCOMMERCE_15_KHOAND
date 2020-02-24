@@ -2,6 +2,7 @@ package com.nopcommerce.user;
 
 import org.testng.annotations.Test;
 
+import commons.PageGeneratorManager;
 import pageObjects.HomePageObject;
 import pageObjects.LoginPageObject;
 
@@ -29,14 +30,13 @@ public class Level_03_ApplyPageObject {
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get("https://demo.nopcommerce.com/");
-		homePage = new HomePageObject(driver);
+		
 	}
 
 	@Test
 	public void TC_01_Login() {
-		homePage.clickToLoginLink();
-		
-		loginPage = new LoginPageObject(driver);
+		homePage = PageGeneratorManager.getHomePage(driver);
+		loginPage = homePage.openLoginPage();
 		System.out.println("Input Email");
 		loginPage.inputTextToEmail("khoa.nguyendang1990@hotmail.com");
 		System.out.println("Input Password");
