@@ -2,6 +2,7 @@ package com.nopcommerce.user;
 
 import org.testng.annotations.Test;
 
+import commons.AbstractPageObject;
 import commons.AbstractTest;
 import commons.PageGeneratorManager;
 import pageObjects.HomePageObject;
@@ -22,6 +23,7 @@ public class Level_06_Multi_Browser_Paralell_Factory_Pattern extends AbstractTes
 	
 	private HomePageObject homePage;
 	private LoginPageObject loginPage;
+	private AbstractPageObject abstractPage;
 	
 	@BeforeClass
 	@Parameters("browser")
@@ -29,9 +31,7 @@ public class Level_06_Multi_Browser_Paralell_Factory_Pattern extends AbstractTes
 		System.setProperty("webdriver.chrome.driver", ".\\resources\\chromedriver.exe");
 		driver = getBrowserDriver(browserName);
 //		abstractPage = new AbstractPage(driver);
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.manage().window().maximize();
-		driver.get("https://demo.nopcommerce.com/");
+		abstractPage.openUrl("https://demo.nopcommerce.com/");
 		homePage = PageGeneratorManager.getHomePage(driver);
 	}
 

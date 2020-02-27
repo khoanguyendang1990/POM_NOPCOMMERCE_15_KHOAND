@@ -2,6 +2,7 @@ package com.nopcommerce.user;
 
 import org.testng.annotations.Test;
 
+import commons.AbstractPageObject;
 import commons.AbstractTest;
 import commons.PageGeneratorManager;
 import pageObjects.FooterMyAccountPageObject;
@@ -16,7 +17,6 @@ import org.testng.annotations.Parameters;
 
 import static org.testng.Assert.assertTrue;
 
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
@@ -30,16 +30,14 @@ public class Level_07_Dynamic_Locator_Rest_Parameters extends AbstractTest {
 	private FooterSiteMapPageObject footerSiteMapPage;
 	private ShippingAndReturnPO shippingAndReturnPage;
 	private SearchPO searchPage;
+	private AbstractPageObject abstractPage;
 
 	@BeforeClass
 	@Parameters("browser")
 	public void beforeClass(String browserName) {
 		System.setProperty("webdriver.chrome.driver", ".\\resources\\chromedriver.exe");
 		driver = getBrowserDriver(browserName);
-//		abstractPage = new AbstractPage(driver);
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.manage().window().maximize();
-		driver.get("https://demo.nopcommerce.com/");
+		abstractPage.openUrl("https://demo.nopcommerce.com/");
 		homePage = PageGeneratorManager.getHomePage(driver);
 	}
 
