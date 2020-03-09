@@ -107,7 +107,7 @@ public class AbstractPageObject {
 			logger.error("Exception Occurred While Clicking To Element: " + e.getMessage());
 		}
 	}
-	
+
 	public void clickToElement(String locator, String... params) {
 		try {
 			locator = castRestParameter(locator, params);
@@ -117,7 +117,7 @@ public class AbstractPageObject {
 			logger.error("Exception Occurred While Clicking To Element: " + e.getMessage());
 		}
 	}
-	
+
 	public String castRestParameter(String locator, String... params) {
 		locator = String.format(locator, (Object[]) params);
 		return locator;
@@ -132,7 +132,7 @@ public class AbstractPageObject {
 			logger.error("Exception Occurred While Sendkey To Element: " + e.getMessage());
 		}
 	}
-	
+
 	public void sendKeyToElement(String locator, String... values) {
 		try {
 			locator = castRestParameter(locator, values);
@@ -157,17 +157,16 @@ public class AbstractPageObject {
 	public void selectItemInCustomDropdown(String parentLocator, String allItemLocator, String expectedItem)
 			throws InterruptedException {
 		element = find(parentLocator);
-
-		jsExecutor.executeScript("agrument[0].scrollIntoView(true);", element);
+		jsExecutor.executeScript("arguments[0].scrollIntoView(true);", element);
 		sleepInSecond(1);
-		jsExecutor.executeScript("agrument[0].click();", element);
+		jsExecutor.executeScript("arguments[0].click();", element);
 		sleepInSecond(1);
 		waitExplicit.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(allItemLocator)));
 		elements = finds(allItemLocator);
 
 		for (WebElement item : elements) {
 			if (item.getText().equals(expectedItem)) {
-				jsExecutor.executeScript("agurment[0].scrollIntoView(true);", expectedItem);
+				jsExecutor.executeScript("arguments[0].scrollIntoView(true);", item);
 				sleepInSecond(1);
 				item.click();
 				sleepInSecond(2);
@@ -206,7 +205,7 @@ public class AbstractPageObject {
 		element = find(locator);
 		return element.getText();
 	}
-	
+
 	public String getTextElement(String locator, String... params) {
 		locator = castRestParameter(locator, params);
 		element = find(locator);
@@ -336,7 +335,7 @@ public class AbstractPageObject {
 		by = By.xpath(locator);
 		waitExplicit.until(ExpectedConditions.visibilityOfElementLocated(by));
 	}
-	
+
 	public void waitForElementVisible(String locator, String... params) {
 		locator = castRestParameter(locator, params);
 		by = By.xpath(locator);
@@ -347,7 +346,7 @@ public class AbstractPageObject {
 		by = By.xpath(locator);
 		waitExplicit.until(ExpectedConditions.presenceOfElementLocated(by));
 	}
-	
+
 	public void waitForElementPresence(String locator, String... params) {
 		locator = castRestParameter(locator, params);
 		by = By.xpath(locator);
@@ -364,22 +363,77 @@ public class AbstractPageObject {
 		waitExplicit.until(ExpectedConditions.elementToBeClickable(by));
 	}
 
+	// Browser
+	public Object executeForBrowser(String javaSript) {
+		return jsExecutor.executeScript(javaSript);
+	}
+
+	public boolean verifyTextInInnerText(String textExpected) {
+		String textActual = (String) jsExecutor
+				.executeScript("return document.documentElement.innerText.match('" + textExpected + "')[0]");
+		System.out.println("Text actual = " + textActual);
+		return textActual.equals(textExpected);
+	}
+
+	public void scrollToBottomPage() {
+		jsExecutor.executeScript("window.scrollBy(0,document.body.scrollHeight)");
+	}
+
+	public void navigateToUrlByJS(String url) {
+		jsExecutor.executeScript("window.location = '" + url + "'");
+	}
+
+	public void highlightElement(String locator) {
+		element = driver.findElement(By.xpath(locator));
+		String originalStyle = element.getAttribute("style");
+		jsExecutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style",
+				"border: 5px solid red; border-style: dashed;");
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		jsExecutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style",
+				originalStyle);
+
+	}
+
+	public void clickToElementByJS(String locator) {
+		element = driver.findElement(By.xpath(locator));
+		jsExecutor.executeScript("arguments[0].click();", element);
+	}
+
+	public void scrollToElement(String locator) {
+		element = driver.findElement(By.xpath(locator));
+		jsExecutor.executeScript("arguments[0].scrollIntoView(true);", element);
+	}
+
+	public void sendkeyToElementByJS(String locator, String value) {
+		element = driver.findElement(By.xpath(locator));
+		jsExecutor.executeScript("arguments[0].setAttribute('value', '" + value + "')", element);
+	}
+
+	public void removeAttributeInDOM(String locator, String attributeRemove) {
+		element = driver.findElement(By.xpath(locator));
+		jsExecutor.executeScript("arguments[0].removeAttribute('" + attributeRemove + "');", element);
+	}
+
 	public LoginPageObject openLoginPage() {
 		waitForElementVisible(AbstractPageUI.HEADER_LOGIN_LINK);
 		clickToElement(AbstractPageUI.HEADER_LOGIN_LINK);
 		return PageGeneratorManager.getLoginPage(driver);
 	}
-	
+
 	public HomePageObject openHomePage() {
 		waitForElementVisible(AbstractPageUI.HEADER_HOME_LINK);
 		clickToElement(AbstractPageUI.HEADER_HOME_LINK);
 		return PageGeneratorManager.getHomePage(driver);
 	}
-	
+
 	public AbstractPageObject openMultiplePage(String pageName) {
-		waitForElementVisible(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
-		clickToElement(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
-		switch(pageName) {
+		waitForElementVisible(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR, pageName);
+		clickToElement(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR, pageName);
+		switch (pageName) {
 		case "Home Page":
 			return PageGeneratorManager.getHomePage(driver);
 		case "My Account":
@@ -394,10 +448,10 @@ public class AbstractPageObject {
 			return PageGeneratorManager.getHomePage(driver);
 		}
 	}
-	
+
 	public void openMultiplePages(String pageName) {
-		waitForElementVisible(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
-		clickToElement(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR,pageName);
+		waitForElementVisible(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR, pageName);
+		clickToElement(AbstractPageUI.FOOTER_DYNAMIC_LOCATOR, pageName);
 	}
-		
+
 }
