@@ -153,8 +153,25 @@ public class AbstractPageObject {
 			logger.error("Exception Occurred While Select Item In Dropdown List To Element: " + e.getMessage());
 		}
 	}
+	
 
 	public void selectItemInCustomDropdown(String parentLocator, String allItemLocator, String expectedItem)
+			throws InterruptedException {
+		element = driver.findElement(By.xpath(parentLocator));
+		sleepInSecond(1);
+		element.click();
+		sleepInSecond(1);
+		elements = driver.findElements(By.xpath(allItemLocator));
+		waitExplicit.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(allItemLocator)));
+		for (WebElement item : elements) {
+			if (item.getText().equals(expectedItem)) {
+				item.click();
+				break;
+			}
+		}
+	}
+
+	public void selectItemInCustomDropdownJS(String parentLocator, String allItemLocator, String expectedItem)
 			throws InterruptedException {
 		element = find(parentLocator);
 		jsExecutor.executeScript("arguments[0].scrollIntoView(true);", element);
@@ -174,6 +191,7 @@ public class AbstractPageObject {
 			}
 		}
 	}
+	
 
 	public void sleepInSecond(long numberInSecond) {
 		try {
