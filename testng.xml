@@ -3,23 +3,28 @@
 <suite name="Nop commerce" parallel="false">
 	<listeners>
 		<listener class-name="commons.MethodListener" />
+		<listener class-name="org.uncommons.reportng.HTMLReporter" />
+		<listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+		<listener class-name="reportConfig.ExtentReportListener" />
+		<listener class-name="reportConfig.ExtentTestListener" />
+		<listener class-name="reportConfig.ReportNGListener" />
 	</listeners>
 	<test name="Run on Chrome">
-		<parameter name="browserName" value="chrome" />
+		<parameter name="browserName" value="chrome_ui" />
 		<classes>
-			<class name="com.nopcommerce.user.Level_06_Multi_Browser_Paralell_Factory_Pattern" />
+			<class name="com.nopcommerce.user.Level_07_DriverManager_Dynamic_Locator_Rest_Parameters" />
 		</classes>
 	</test>
-	<test name="Run on Firefox">
-		<parameter name="browserName" value="firefox" />
-		<classes>
-			<class name="com.nopcommerce.user.Level_06_Multi_Browser_Paralell_Factory_Pattern" />
-		</classes>
-	</test>
-	<test name="Run on Chrome Headless">
-		<parameter name="browserName" value="chrome_headless" />
-		<classes>
-			<class name="com.nopcommerce.user.Level_06_Multi_Browser_Paralell_Factory_Pattern" />
-		</classes>
-	</test>
+<!-- 	<test name="Run on Firefox"> -->
+<!-- 		<parameter name="browserName" value="firefox" /> -->
+<!-- 		<classes> -->
+<!-- 			<class name="com.nopcommerce.user.Level_07_Dynamic_Locator_Rest_Parameters" /> -->
+<!-- 		</classes> -->
+<!-- 	</test> -->
+<!-- 	<test name="Run on Chrome Headless"> -->
+<!-- 		<parameter name="browserName" value="chrome_headless" /> -->
+<!-- 		<classes> -->
+<!-- 			<class name="com.nopcommerce.user.Level_07_Dynamic_Locator_Rest_Parameters" /> -->
+<!-- 		</classes> -->
+<!-- 	</test> -->
 </suite> <!-- Suite -->

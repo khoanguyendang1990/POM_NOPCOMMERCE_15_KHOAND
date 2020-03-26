@@ -1,6 +1,4 @@
 /bin/
-<<<<<<< HEAD
-/test-output/
-=======
 /test-output
->>>>>>> branch 'master' of https://github.com/khoanguyendang1990/POM_NOPCOMMERCE_15_KHOAND.git
+/ExtentReportV2/
+/ExtentReports/

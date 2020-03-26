@@ -32,7 +32,7 @@ public class Level_07_Dynamic_Locator_Rest_Parameters extends AbstractTest {
 	private SearchPO searchPage;
 
 	@BeforeClass
-	@Parameters("browser")
+	@Parameters("browserName")
 	public void beforeClass(String browserName) {
 		System.setProperty("webdriver.chrome.driver", ".\\resources\\chromedriver.exe");
 		driver = getBrowserDriver(browserName);
@@ -43,7 +43,7 @@ public class Level_07_Dynamic_Locator_Rest_Parameters extends AbstractTest {
 	@Test
 	public void TC_01_Login() {
 
-		loginPage = (LoginPageObject) homePage.openMultiplePage("Home Page");
+		loginPage = homePage.openLoginPage();
 		System.out.println("Input Email");
 		loginPage.inputTextToEmail("khoa.nguyendang1990@hotmail.com");
 		System.out.println("Input Password");

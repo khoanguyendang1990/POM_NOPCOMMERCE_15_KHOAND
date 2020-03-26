@@ -2,6 +2,7 @@ package commons;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -83,7 +84,7 @@ public class AbstractPageObject {
 		waitExplicit.until(ExpectedConditions.alertIsPresent());
 	}
 
-	public String getTextAlert(String value) {
+	public String getTextAlert() {
 		return driver.switchTo().alert().getText();
 	}
 
@@ -153,10 +154,8 @@ public class AbstractPageObject {
 			logger.error("Exception Occurred While Select Item In Dropdown List To Element: " + e.getMessage());
 		}
 	}
-	
 
-	public void selectItemInCustomDropdown(String parentLocator, String allItemLocator, String expectedItem)
-			throws InterruptedException {
+	public void selectItemInCustomDropdown(String parentLocator, String allItemLocator, String expectedItem) throws InterruptedException {
 		element = driver.findElement(By.xpath(parentLocator));
 		sleepInSecond(1);
 		element.click();
@@ -171,8 +170,7 @@ public class AbstractPageObject {
 		}
 	}
 
-	public void selectItemInCustomDropdownJS(String parentLocator, String allItemLocator, String expectedItem)
-			throws InterruptedException {
+	public void selectItemInCustomDropdownJS(String parentLocator, String allItemLocator, String expectedItem) throws InterruptedException {
 		element = find(parentLocator);
 		jsExecutor.executeScript("arguments[0].scrollIntoView(true);", element);
 		sleepInSecond(1);
@@ -191,7 +189,6 @@ public class AbstractPageObject {
 			}
 		}
 	}
-	
 
 	public void sleepInSecond(long numberInSecond) {
 		try {
@@ -338,11 +335,9 @@ public class AbstractPageObject {
 				logger.error("Element was not displayed to drag");
 			}
 		} catch (StaleElementReferenceException e) {
-			logger.error("Element with " + sourceElement + "or" + destinationElement
-					+ "is not attached to the page document " + e.getStackTrace());
+			logger.error("Element with " + sourceElement + "or" + destinationElement + "is not attached to the page document " + e.getStackTrace());
 		} catch (NoSuchElementException e) {
-			logger.error("Element with " + sourceElement + "or" + destinationElement + "was not found in DOM "
-					+ e.getStackTrace());
+			logger.error("Element with " + sourceElement + "or" + destinationElement + "was not found in DOM " + e.getStackTrace());
 		} catch (Exception e) {
 			logger.error("Error occurred while performing drag and drop operation " + e.getStackTrace());
 		}
@@ -371,9 +366,46 @@ public class AbstractPageObject {
 		waitExplicit.until(ExpectedConditions.presenceOfElementLocated(by));
 	}
 
+	public void overrideGlobalTimeout(long timeOut) {
+		driver.manage().timeouts().implicitlyWait(timeOut, TimeUnit.SECONDS);
+	}
+
 	public void waitForElementInvisible(String locator) {
 		by = By.xpath(locator);
+		overrideGlobalTimeout(shortTimeout);
 		waitExplicit.until(ExpectedConditions.invisibilityOfElementLocated(by));
+		overrideGlobalTimeout(longTimeout);
+	}
+
+	public boolean isControlUndisplay(String locator) {
+		overrideGlobalTimeout(shortTimeout);
+		List<WebElement> elements = finds(locator);
+		if (elements.size() == 0) {
+			overrideGlobalTimeout(longTimeout);
+			return true;
+		} else if (elements.size() > 0 && !elements.get(0).isDisplayed()) {
+			overrideGlobalTimeout(longTimeout);
+			return true;
+		} else {
+			overrideGlobalTimeout(longTimeout);
+			return false;
+		}
+	}
+
+	public boolean isControlUndisplay(String locator, String... value) {
+		overrideGlobalTimeout(shortTimeout);
+		locator = String.format(locator, (Object[]) value);
+		List<WebElement> elements = finds(locator);
+		if (elements.size() == 0) {
+			overrideGlobalTimeout(longTimeout);
+			return true;
+		} else if (elements.size() > 0 && !elements.get(0).isDisplayed()) {
+			overrideGlobalTimeout(longTimeout);
+			return true;
+		} else {
+			overrideGlobalTimeout(longTimeout);
+			return false;
+		}
 	}
 
 	public void waitForElementClickable(String locator) {
@@ -387,8 +419,7 @@ public class AbstractPageObject {
 	}
 
 	public boolean verifyTextInInnerText(String textExpected) {
-		String textActual = (String) jsExecutor
-				.executeScript("return document.documentElement.innerText.match('" + textExpected + "')[0]");
+		String textActual = (String) jsExecutor.executeScript("return document.documentElement.innerText.match('" + textExpected + "')[0]");
 		System.out.println("Text actual = " + textActual);
 		return textActual.equals(textExpected);
 	}
@@ -404,15 +435,13 @@ public class AbstractPageObject {
 	public void highlightElement(String locator) {
 		element = driver.findElement(By.xpath(locator));
 		String originalStyle = element.getAttribute("style");
-		jsExecutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style",
-				"border: 5px solid red; border-style: dashed;");
+		jsExecutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style", "border: 5px solid red; border-style: dashed;");
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		jsExecutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style",
-				originalStyle);
+		jsExecutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style", originalStyle);
 
 	}
 
@@ -454,13 +483,13 @@ public class AbstractPageObject {
 		switch (pageName) {
 		case "Home Page":
 			return PageGeneratorManager.getHomePage(driver);
-		case "My Account":
+		case "My account":
 			return PageGeneratorManager.getFooterMyAccountPage(driver);
-		case "Site Map":
+		case "Sitemap":
 			return PageGeneratorManager.getSiteMapPage(driver);
-		case "Shipping And Return":
+		case "Shipping & returns":
 			return PageGeneratorManager.getShippingAndReturnPage(driver);
-		case "Search Page":
+		case "Search":
 			return PageGeneratorManager.getSearchPage(driver);
 		default:
 			return PageGeneratorManager.getHomePage(driver);

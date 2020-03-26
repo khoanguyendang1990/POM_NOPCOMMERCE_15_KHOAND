@@ -24,11 +24,14 @@ public class AbstractTest {
 		log = LogFactory.getLog(getClass());
 	}
 
+	public WebDriver getDriver() {
+		return driver;
+	}
 	protected synchronized WebDriver getBrowserDriver(String browserName) {
 		if (browserName.equalsIgnoreCase("firefox")) {
 			System.setProperty("webdriver.gecko.driver", rootFolder + "/resources/geckodriver.exe");
 			driver = new FirefoxDriver();
-		} else if (browserName.equalsIgnoreCase("chrome")) {
+		} else if (browserName.equalsIgnoreCase("chrome_ui")) {
 			System.setProperty("webdriver.chrome.driver", rootFolder + "/resources/chromedriver.exe");
 			driver = new ChromeDriver();
 		} else if (browserName.equalsIgnoreCase("ie")) {

@@ -24,7 +24,7 @@ public class Level_06_Multi_Browser_Paralell_Factory_Pattern extends AbstractTes
 	private LoginPageObject loginPage;
 	
 	@BeforeClass
-	@Parameters("browser")
+	@Parameters("browserName")
 	public void beforeClass(String browserName) {
 		System.setProperty("webdriver.chrome.driver", ".\\resources\\chromedriver.exe");
 		driver = getBrowserDriver(browserName);
